@@ -1,29 +1,19 @@
 $LOAD_PATH << File.join(File.dirname(__FILE__), 'lib')
-require 'network'
-require 'analysiser'
+require 'game'
 
 module HangMan
+  while true
+    begin
+      game = Game.new
+      game.play
 
-=begin
-  USER_ID = 'weirenzhong@gmail.com'
-
-  request = Request::InitiateRequest.new(USER_ID)
-  login_res = Response.new(request.send)
-
-  if login_res.success?
-    login_res.get_data['numberOfWordsToGuess'].times do
-      request = Request::NextWordRequest.new(USER_ID)
-      request.secret = login_res.get_secret
-
-      word_res = Response.new(request.send)
-      if word_res.success?
-      end
-      sleep(500)
+      f = open("result.txt", 'a')
+      f.write(game.get_result.to_s)
+      f.write("\n")
+      f.close
+    rescue => e
+      puts "Error !!"
+      sleep(60)
     end
   end
-=end
-
-  ana = Analysiser.new
-  ana.analysis('raw_data/100k_samples.pure')
-  ana.load
 end

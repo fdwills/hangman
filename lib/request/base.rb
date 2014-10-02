@@ -31,10 +31,11 @@ module HangMan
         request['Accept'] = "application/json"
         request['Content-Type'] = "application/json"
         request.body = self.request_body_json
-        puts self.request_body_json
+        puts "Sending request: " + self.request_body_json
 
         response = http.request(request)
 
+        puts "Got: " + response.body, "\n"
         JSON.parse(response.body)
       end
     end

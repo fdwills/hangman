@@ -1,0 +1,86 @@
+require 'analysiser'
+require 'network'
+
+module HangMan
+  class Game
+    USER_ID = 'weirenzhong@gmail.com'
+    SOURCE_FILE = 'raw_data/100k_samples.pure'
+    LOG_FILE = 'log.txt'
+
+    attr_accessor :ana, :secret, :number_of_words
+    def initialize
+      request = Request::InitiateRequest.new(USER_ID)
+      login_res = Response.new(request.send)
+      if login_res.success?
+        @secret = login_res.get_secret
+        @number_of_words = login_res.get_data['numberOfWordsToGuess']
+      end
+
+      # update predict model
+      @ana = Analysiser.new
+      @ana.analysis(SOURCE_FILE)
+
+      # load predict file in lib/model/*
+      @ana.load
+    end
+
+    def play
+      @number_of_words.times do
+        request = Request::NextwordRequest.new(USER_ID)
+        request.secret = @secret
+        word_res = Response.new(request.send)
+
+        # init
+        pattern = word_res.get_word.downcase
+        guessed = []
+
+        if word_res.success?
+          while true
+            pchar = @ana.predict(pattern, guessed)
+            guessed << pchar
+            guess_request = Request::GuessRequest.new(USER_ID, pchar)
+            guess_request.secret = secret
+            guess_response = Response.new(guess_request.send)
+
+            if guess_response.success?
+              next_pattern = guess_response.get_word.downcase
+              self.log(pattern, guessed.to_s, next_pattern)
+
+              if guess_response.get_word.include?('*')
+                if guess_response.get_data['numberOfGuessAllowedForThisWord'] == 0
+                  break
+                end
+              else
+                self.append_source(guess_response.get_word.downcase)
+                break
+              end
+
+              pattern = next_pattern
+            end
+          end
+        end
+        sleep(1)
+      end
+    end
+
+    def get_result
+      result_request = Request::ResultRequest.new(USER_ID)
+      result_request.secret = @secret
+      result_request.send
+    end
+
+    def append_source(word)
+      f = open(SOURCE_FILE, "a")
+      f.write(word)
+      f.write("\n")
+      f.close
+    end
+
+    def log(origin, guess, result)
+      f = open(LOG_FILE, "a")
+      f.write(origin + "\t" + guess + "\t" + result)
+      f.write("\n")
+      f.close
+    end
+  end
+end

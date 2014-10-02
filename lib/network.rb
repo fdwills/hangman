@@ -4,4 +4,4 @@ require 'request/nextword_request'
 require 'request/guess_request'
 require 'request/result_request'
 
-require 'response/base'
+require 'response/response'
