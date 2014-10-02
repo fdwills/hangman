@@ -9,7 +9,7 @@ module HangMan
 
       def predict(word, candidate)
         return nil if self.probility_model.nil?
-        return nil if word[-1] != '*'
+        return {} if word[-1] != '*'
 
         all = candidate.inject(0) do |r, char|
           unless self.probility_model[char].nil?
@@ -27,19 +27,19 @@ module HangMan
       end
 
       def get_data(source)
-        head_model = {}
+        model = {}
         f = open(source, 'r')
         f.each do |line|
           word = line.chomp
-          if head_model[word[-1]].nil?
-            head_model[word[-1]] = 1
+          if model[word[-1]].nil?
+            model[word[-1]] = 1
           else
-            head_model[word[-1]] += 1
+            model[word[-1]] += 1
           end
         end
         f.close
 
-        head_model
+        model
       end
     end
   end

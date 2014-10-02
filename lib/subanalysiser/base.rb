@@ -16,7 +16,7 @@ module HangMan
         @probility_model = YAML.load_file(self.model_file)
       end
 
-      def predict(word, used)
+      def predict(word, canditate)
         raise
       end
 

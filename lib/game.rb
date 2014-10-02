@@ -1,4 +1,5 @@
 require 'analysiser'
+require 'new_analysiser'
 require 'network'
 
 module HangMan
@@ -17,7 +18,7 @@ module HangMan
       end
 
       # update predict model
-      @ana = Analysiser.new
+      @ana = NewAnalysiser.new
       @ana.analysis(SOURCE_FILE)
 
       # load predict file in lib/model/*

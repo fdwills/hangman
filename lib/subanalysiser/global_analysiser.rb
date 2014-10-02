@@ -2,20 +2,19 @@ require 'subanalysiser/base'
 
 module HangMan
   module SubAnalysiser
-    class HeadAnalysiser < Base
+    class GlobalAnalysiser < Base
       def model_file
-        "lib/model/head.yaml"
+        "lib/model/all.yaml"
       end
 
       def predict(word, candidate)
         return nil if self.probility_model.nil?
-        return {} if word[0] != '*'
 
         all = candidate.inject(0) do |r, char|
           unless self.probility_model[char].nil?
             r = r + self.probility_model[char]
           end
-          r
+            r
         end
 
         candidate.inject({}) do |r, char|
@@ -27,19 +26,22 @@ module HangMan
       end
 
       def get_data(source)
-        head_model = {}
+        model = {}
         f = open(source, 'r')
+
         f.each do |line|
           word = line.chomp
-          if head_model[word[0]].nil?
-            head_model[word[0]] = 1
-          else
-            head_model[word[0]] += 1
+          word.each_char do |ch|
+            if model[ch].nil?
+              model[ch] = 1
+            else
+              model[ch] += 1
+            end
           end
         end
         f.close
 
-        head_model
+        model
       end
     end
   end
