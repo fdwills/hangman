@@ -1,9 +1,4 @@
 require 'yaml'
-require 'subanalysiser/head_analysiser'
-require 'subanalysiser/reverse_relation_analysiser'
-require 'subanalysiser/global_analysiser'
-require 'subanalysiser/relation_analysiser'
-require 'subanalysiser/tail_analysiser'
 
 module HangMan
   class NewAnalysiser
@@ -12,21 +7,20 @@ module HangMan
     def initialize
       @source = nil
       @models = []
-      @models << SubAnalysiser::HeadAnalysiser.new
-      @models << SubAnalysiser::TailAnalysiser.new
-      @models << SubAnalysiser::GlobalAnalysiser.new
-      @models << SubAnalysiser::RelationAnalysiser.new
-      @models << SubAnalysiser::ReverseRelationAnalysiser.new
+    end
+
+    def add_analysiser(analysiser, weight)
+      @models << [analysiser, weight]
     end
 
     def analysis(source)
-      @models.each do |model|
+      @models.each do |model, weight|
         model.analysis(source)
       end
     end
 
     def load
-      @models.each do |model|
+      @models.each do |model, weight|
         model.load
       end
     end
@@ -38,12 +32,13 @@ module HangMan
         r
       end
 
-      @models.inject(result) do |r, model|
+      @models.inject(result) do |r, model_pair|
+        model, weight = model_info
         probilitys = model.predict(word, candidate)
 
         candidate.each do |char|
           unless probilitys[char].nil?
-            result[char] += probilitys[char]
+            result[char] += weight * probilitys[char]
           end
         end
 

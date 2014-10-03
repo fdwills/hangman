@@ -17,15 +17,23 @@ module HangMan
         @number_of_words = login_res.get_data['numberOfWordsToGuess']
       end
 
-      # update predict model
       @ana = NewAnalysiser.new
+    end
+
+    def add_analysiser(analysiser)
+      @ana.add_analysiser(analysiser)
+      self
+    end
+
+    def play
+      raise if @ana.models.size == 0
+
+      # update predict model
       @ana.analysis(SOURCE_FILE)
 
       # load predict file in lib/model/*
       @ana.load
-    end
 
-    def play
       @number_of_words.times do
         request = Request::NextwordRequest.new(USER_ID)
         request.secret = @secret
@@ -65,9 +73,15 @@ module HangMan
     end
 
     def get_result
-      result_request = Request::ResultRequest.new(USER_ID)
-      result_request.secret = @secret
-      result_request.send
+      request = Request::ResultRequest.new(USER_ID)
+      request.secret = @secret
+      request.send
+    end
+
+    def submit
+      request = Request::SubmitRequest.new(USER_ID)
+      request.secret = @secret
+      request.send
     end
 
     def append_source(word)
