@@ -5,7 +5,7 @@ module HangMan
   module SubAnalysiser
     class SvmAnalysiser < Base
 
-      SAMPLE_NUMBER = 100000
+      SAMPLE_NUMBER = 400000
       MODEL_FILE = 'lib/model/svm.model'
       TRAIN_FILE = 'lib/model/svm.train'
 

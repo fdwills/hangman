@@ -23,7 +23,11 @@ module HangMan
 
           candidate.inject(result) do |r, char|
             unless self.probility_model[word[i-1]][char].nil?
-              r[char] = self.probility_model[word[i-1]][char]/Float(all)
+              if r[char].nil?
+                r[char] = self.probility_model[word[i-1]][char]/Float(all)
+              else
+                r[char] = r[char] + self.probility_model[word[i-1]][char]/Float(all)
+              end
             end
             r
           end

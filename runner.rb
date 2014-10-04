@@ -4,6 +4,7 @@ require 'hangman'
 HIGHT_SCORE_FILE = "log/high_score"
 RESULT_FILE = "log/result.txt"
 SUBMIT_FILE = "log/submit.txt"
+ERROR_LOG_FILE = "log/error.txt"
 
 while true
   begin
@@ -16,7 +17,9 @@ while true
     game.add_analysiser(HangMan::SubAnalysiser::TailAnalysiser.new, 1)
     game.add_analysiser(HangMan::SubAnalysiser::RelationAnalysiser.new, 1)
     game.add_analysiser(HangMan::SubAnalysiser::ReverseRelationAnalysiser.new, 1)
+    #game.add_analysiser(HangMan::SubAnalysiser::SizedGlobalAnalysiser.new, 1)
     game.add_analysiser(HangMan::SubAnalysiser::GlobalAnalysiser.new, 1)
+    #game.add_analysiser(HangMan::SubAnalysiser::BayesAnalysiser.new, 1)
     #game.add_analysiser(HangMan::SubAnalysiser::SvmAnalysiser.new, 1)
     #game.add_analysiser(HangMan::SubAnalysiser::RandomAnalysiser.new, 1)
     game.play(analysis: true)
@@ -47,5 +50,10 @@ while true
     else
       puts "Ignore result!"
     end
+  rescue => e
+    f = open(ERROR_LOG_FILE, 'a')
+    f.write(e.backtrace)
+    f.write("\n")
+    f.close
   end
 end
