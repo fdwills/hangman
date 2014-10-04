@@ -17,9 +17,14 @@ module HangMan
             r
         end
 
+        star_count = 0
+        word.each_char do |char|
+          star_count = star_count + 1 if char == '*'
+        end
+
         candidate.inject({}) do |r, char|
           unless self.probility_model[char].nil?
-            r[char] = self.probility_model[char]/Float(all)
+            r[char] = star_count * self.probility_model[char]/Float(all)
           end
           r
         end
@@ -31,7 +36,8 @@ module HangMan
 
         f.each do |line|
           word = line.chomp
-          word.each_char do |ch|
+          # same letter in a word plus 1
+          word.split(//).uniq.each do |ch|
             if model[ch].nil?
               model[ch] = 1
             else

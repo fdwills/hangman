@@ -1,0 +1,8 @@
+require 'game'
+require 'subanalysiser/head_analysiser'
+require 'subanalysiser/reverse_relation_analysiser'
+require 'subanalysiser/global_analysiser'
+require 'subanalysiser/relation_analysiser'
+require 'subanalysiser/tail_analysiser'
+require 'subanalysiser/svm_analysiser'
+require 'subanalysiser/random_analysiser'

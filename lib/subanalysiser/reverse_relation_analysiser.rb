@@ -12,7 +12,7 @@ module HangMan
 
         result = {}
         for i in (0..word.size - 2) do
-          next if word[i+1] == '*'
+          next if (word[i] != '*' || word[i+1] == '*')
 
           all = candidate.inject(0) do |r, char|
             unless self.probility_model[word[i+1]][char].nil?
