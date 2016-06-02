@@ -1,6 +1,12 @@
 hangman
 =======
 
+Hangmang is a word guess game.
+
+Server site is on [strikingly-interview](http://strikingly-interview-test.herokuapp.com/guess/process).
+
+This project is a ruby solution for hangman game.
+
 ## Required
 
 ```sh
